@@ -11,13 +11,13 @@
 <body
     class="font-sans bg-gradient-to-br from-blue-50 via-indigo-50 to-gray-100 min-h-screen flex items-center justify-center">
 
-    <div class="bg-white p-8 rounded-xl shadow-lg w-80 max-w-full">
+    <div class="bg-white p-4 rounded-xl shadow-lg w-80 max-w-full">
         <h2 class="text-2xl font-bold text-gray-700 mb-5 text-center">
             Create Account
         </h2>
 
         <!-- Name -->
-        <div class="mb-4">
+        <div class="mb-3">
             <label for="name" class="block text-sm text-gray-600 mb-1">
                 Name
             </label>
@@ -26,7 +26,7 @@
         </div>
 
         <!-- Email -->
-        <div class="mb-4">
+        <div class="mb-3">
             <label for="email" class="block text-sm text-gray-600 mb-1">
                 Email
             </label>
@@ -35,7 +35,7 @@
         </div>
 
         <!-- Password -->
-        <div class="relative mb-4">
+        <div class="relative mb-3">
             <label for="password" class="block text-sm text-gray-600 mb-1">
                 Password
             </label>
@@ -50,7 +50,7 @@
         </div>
 
         <!-- Confirm Password -->
-        <div class="relative mb-5">
+        <div class="relative mb-3">
             <label for="confirm_password" class="block text-sm text-gray-600 mb-1">
                 Confirm Password
             </label>
@@ -72,7 +72,7 @@
         </button>
 
         <!-- Login Link -->
-        <div class="mt-4 text-center">
+        <div class="mt-3 text-center">
             <span class="text-sm text-gray-600">
                 Already have an account?
             </span>

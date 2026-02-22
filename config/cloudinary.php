@@ -2,14 +2,18 @@
 
 return [
 
-    /*
-    |--------------------------------------------------------------------------
-    | Cloudinary URL (REQUIRED)
-    |--------------------------------------------------------------------------
-    | This key name is REQUIRED by cloudinary-labs/cloudinary-laravel v2.x
-    | If this is missing or null → CloudinaryEngine::$url crashes
-    */
+    'cloud_url' => env('CLOUDINARY_URL'),
 
-    'cloudinary_url' => env('CLOUDINARY_URL'),
+    'cloud' => [
+        'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+        'api_key'    => env('CLOUDINARY_API_KEY'),
+        'api_secret' => env('CLOUDINARY_API_SECRET'),
+    ],
+
+    'url' => [
+        'secure' => true,
+    ],
 
 ];
+
+// php artisan tinker

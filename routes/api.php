@@ -26,6 +26,9 @@ Route::prefix('users')->group(function () {
     Route::post('/', [AuthController::class, 'register']);
 
     Route::middleware('auth:api')->group(function () {
+        Route::put('', [UserController::class, 'updateProfileDetails']);
+        Route::post('profile-image', [UserController::class, 'saveProfileImage']);
+
         Route::get('addresses', [AddressController::class, 'index']);
         Route::post('addresses', [AddressController::class, 'addUserAddress']);
         Route::get('others', [UserController::class, 'listOtherUsers']);

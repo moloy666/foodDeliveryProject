@@ -4,16 +4,31 @@
 
 @section('content')
 
-     <div class="flex items-center justify-between px-4 mb-2">
-        <h2 class="text-xl font-semibold text-gray-800">
-            Top Restaurants
-        </h2>
+    <nav class="flex mb-6" aria-label="Breadcrumb">
+        <ol class="inline-flex items-center space-x-1 md:space-x-3">
+            <li class="inline-flex items-center">
+                <a href="/" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-600">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z">
+                        </path>
+                    </svg>
+                    Home
+                </a>
+            </li>
 
-        <a href="{{route("restaurantPage")}}" class="text-sm font-medium text-indigo-600 hover:underline">
-            View All →
-        </a>
-    </div>
-
+            <li>
+                <div class="flex items-center">
+                    <svg class="w-6 h-6 text-gray-400" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Restaurants</span>
+                </div>
+            </li>
+        </ol>
+    </nav>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4" id="restaurantList">
 
@@ -57,7 +72,7 @@
                                 <h3 class="text-lg font-semibold mb-1">
                                     ${item.name}
                                 </h3>
-                                <p class="text-gray-500 text-sm mb-3">${item.description || 'No Description'}</p>
+                                <p class="text-gray-500 text-sm mb-3">${item.description}</p>
                                 <p class="text-gray-500 text-sm mb-3">
                                     ${item.addresses?.address_line_1}, ${item.addresses?.city}, ${item.addresses?.postal_code}
                                 </p>

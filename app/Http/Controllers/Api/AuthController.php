@@ -49,6 +49,36 @@ class AuthController extends Controller
                 'email'    => 'required|email|unique:users',
                 'password' => 'required|min:6',
             ]);
+
+
+            $code = rand(100000, 999999);
+
+            $user = User::create([
+                'name'              => $request->name,
+                'email'             => $request->email,
+                'password'          => Hash::make($request->password),
+                'status'            => 'pending',
+                'verification_code' => $code,
+            ]);
+
+            if (!$user) {
+                return $this->errorResponse(
+                    500,
+                    'Internal Server Error',
+                    ['internal_server_error']
+                );
+            }
+
+            // Send verification email
+            Mail::to($user->email)->queue(new \App\Mail\VerifyEmailCode($user, $code));
+
+            return $this->successResponse(
+                201,
+                'User created. Check email for verification code.',
+                [
+                    'user' => $user->only(['uid', 'email', 'status'])
+                ],
+            );
         } catch (\Illuminate\Validation\ValidationException $e) {
             return $this->errorResponse(
                 422,
@@ -56,35 +86,6 @@ class AuthController extends Controller
                 $e->errors(),
             );
         }
-
-        $code = rand(100000, 999999);
-
-        $user = User::create([
-            'name'              => $request->name,
-            'email'             => $request->email,
-            'password'          => Hash::make($request->password),
-            'status'            => 'pending',
-            'verification_code' => $code,
-        ]);
-
-        if (!$user) {
-            return $this->errorResponse(
-                500,
-                'Internal Server Error',
-                ['internal_server_error']
-            );
-        }
-
-        // Send verification email
-        Mail::to($user->email)->queue(new \App\Mail\VerifyEmailCode($user, $code));
-
-        return $this->successResponse(
-            201,
-            'User created. Check email for verification code.',
-            [
-                'user' => $user->only(['uid', 'email', 'status'])
-            ],
-        );
     }
 
     public function verifyUser(Request $request)
@@ -174,25 +175,24 @@ class AuthController extends Controller
 
     public function logout(Request $request, AuthCookieService $cookieService)
     {
-        $refreshValue = $request->cookie('refresh_token') ?? $request->input('refresh_token');
-
-        if ($refreshValue) {
-            RefreshToken::where('token', hash('sha256', $refreshValue))
-                ->update(['revoked' => true]);
-        }
-
         try {
+            $refreshValue = $request->cookie('refresh_token') ?? $request->input('refresh_token');
+
+            if ($refreshValue) {
+                RefreshToken::where('token', hash('sha256', $refreshValue))
+                    ->update(['revoked' => true]);
+            }
+
             auth('api')->logout();
+
+            return $this->successResponse(
+                200,
+                'Successfully logged out'
+            )->cookie($cookieService->forgetAll());
+
         } catch (\Exception $e) {
             // Token already invalid or expired — safe to ignore
         }
-
-        return $this->successResponse(
-            200,
-            'Successfully logged out'
-        )
-            ->cookie($cookieService->forget('access_token'))
-            ->cookie($cookieService->forget('refresh_token'));
     }
 
 

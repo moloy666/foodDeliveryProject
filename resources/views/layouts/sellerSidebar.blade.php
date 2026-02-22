@@ -3,35 +3,35 @@
         <nav class="flex flex-col space-y-4">
 
             <a href="{{ route('sellerRestaurantProfilePage', ['uid' => $restaurantId]) }}"
-                class="block py-2 px-3 rounded hover:bg-blue-500 hover:text-white {{ request()->routeIs('sellerRestaurantProfilePage') ? 'bg-blue-600 text-white' : 'text-gray-700' }}">
+                class="block py-2 px-3 rounded hover:bg-gray-500 hover:text-white {{ request()->routeIs('sellerRestaurantProfilePage') ? 'bg-gray-800 text-white' : 'text-gray-700' }}">
                 Basic Details
             </a>
             <a href="{{ route('sellerRestaurantImagePage', ['uid' => $restaurantId]) }}"
-                class="block py-2 px-3 rounded hover:bg-blue-500 hover:text-white {{ request()->routeIs('sellerRestaurantImagePage') ? 'bg-blue-600 text-white' : 'text-gray-700' }}">
+                class="block py-2 px-3 rounded hover:bg-gray-500 hover:text-white {{ request()->routeIs('sellerRestaurantImagePage') ? 'bg-gray-800 text-white' : 'text-gray-700' }}">
                 Images
             </a>
             <a href="{{ route('sellerRestaurantDocumentPage', ['uid' => $restaurantId]) }}"
-                class="block py-2 px-3 rounded hover:bg-blue-500 hover:text-white {{ request()->routeIs('sellerRestaurantDocumentPage') ? 'bg-blue-600 text-white' : 'text-gray-700' }}">
+                class="block py-2 px-3 rounded hover:bg-gray-500 hover:text-white {{ request()->routeIs('sellerRestaurantDocumentPage') ? 'bg-gray-800 text-white' : 'text-gray-700' }}">
                 Documents
             </a>
             <a href="{{ route('sellerRestaurantAddressPage', ['uid' => $restaurantId]) }}"
-                class="block py-2 px-3 rounded hover:bg-blue-500 hover:text-white {{ request()->routeIs('sellerRestaurantAddressPage') ? 'bg-blue-600 text-white' : 'text-gray-700' }}">
+                class="block py-2 px-3 rounded hover:bg-gray-500 hover:text-white {{ request()->routeIs('sellerRestaurantAddressPage') ? 'bg-gray-800 text-white' : 'text-gray-700' }}">
                 Address
             </a>
             <a href="{{ route('sellerRestaurantPage', ['uid' => $restaurantId]) }}"
-                class="block py-2 px-3 rounded hover:bg-blue-500 hover:text-white {{ request()->routeIs('sellerRestaurantPage') ? 'bg-blue-600 text-white' : 'text-gray-700' }}">
+                class="block py-2 px-3 rounded hover:bg-gray-500 hover:text-white {{ request()->routeIs('sellerRestaurantPage') ? 'bg-gray-800 text-white' : 'text-gray-700' }}">
                 Dashboard
             </a>
             <a href="{{ route('sellerRestaurantMenuPage', ['uid' => $restaurantId]) }}"
-                class="block py-2 px-3 rounded hover:bg-blue-500 hover:text-white {{ request()->routeIs('sellerRestaurantMenuPage') ? 'bg-blue-600 text-white' : 'text-gray-700' }}">
+                class="block py-2 px-3 rounded hover:bg-gray-500 hover:text-white {{ request()->routeIs('sellerRestaurantMenuPage') ? 'bg-gray-800 text-white' : 'text-gray-700' }}">
                 Menu
             </a>
             <a href="{{ route('sellerRestaurantFoodPage', ['uid' => $restaurantId]) }}"
-                class="block py-2 px-3 rounded hover:bg-blue-500 hover:text-white {{ request()->routeIs('sellerRestaurantFoodPage') ? 'bg-blue-600 text-white' : 'text-gray-700' }}">
+                class="block py-2 px-3 rounded hover:bg-gray-500 hover:text-white {{ request()->routeIs('sellerRestaurantFoodPage') ? 'bg-gray-800 text-white' : 'text-gray-700' }}">
                 Foods
             </a>
             <a href="{{ route('sellerDashboardPage') }}"
-                class="block py-2 px-3 rounded hover:bg-blue-500 hover:text-white">
+                class="block py-2 px-3 rounded hover:bg-gray-500 hover:text-white">
                 Go Back
             </a>
         </nav>

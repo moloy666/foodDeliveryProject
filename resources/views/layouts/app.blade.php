@@ -14,6 +14,7 @@
 
     @php
         $isCartPage = request()->routeIs('cartPage');
+        $isHomePage = request()->routeIs('homePage');
     @endphp
 
     @if (!$isCartPage)
@@ -43,7 +44,7 @@
 
     </div>
 
-    @if (!$isCartPage)
+    @if ($isHomePage)
         @include('layouts.footer')
     @endif
 

@@ -18,7 +18,7 @@
 
     {{-- content is in sidebar --}}
 
-    @include('layouts.footer')
+    {{-- @include('layouts.footer') --}}
 
     @stack('scripts')
 

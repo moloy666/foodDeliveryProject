@@ -887,6 +887,22 @@
 
             renderFoods();
         });
+        
+        document.getElementById('searchMobile').addEventListener('input', (e) => {
+            currentSearch = e.target.value.toLowerCase().trim();
+
+            const params = new URLSearchParams(window.location.search);
+            if (currentSearch) {
+                params.set("search", currentSearch);
+            } else {
+                params.delete("search");
+            }
+
+            const newUrl = `${window.location.pathname}?${params.toString()}`;
+            window.history.replaceState({}, "", newUrl);
+
+            renderFoods();
+        });
     </script>
 
 @endsection

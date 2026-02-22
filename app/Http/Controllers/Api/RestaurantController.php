@@ -7,12 +7,12 @@ use Illuminate\Support\Facades\Validator;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 
-use App\Services\CloudinaryService;
-
 use App\Models\Restaurant;
 use App\Models\RestaurantDocument;
 use App\Models\RestaurantImages;
 use App\Models\RestaurantMenus;
+
+use App\Services\CloudinaryService;
 
 use Illuminate\Support\Facades\Storage;
 
@@ -44,7 +44,7 @@ class RestaurantController extends Controller
                 'user_name'   => $restaurant->user ? $restaurant->user->name : null,
                 'images' => $restaurant->images->mapWithKeys(function ($image) {
                     return [
-                        $image->type => asset('storage/' . $image->file_path),
+                        $image->type => $image->file_path,
                     ];
                 }),
                 'addresses'   => $restaurant->addresses->mapWithKeys(function ($addresses) {
@@ -145,7 +145,7 @@ class RestaurantController extends Controller
                 'status'      => $restaurant->status,
                 'images' => $restaurant->images->mapWithKeys(function ($image) {
                     return [
-                        $image->type => asset('storage/' . $image->file_path),
+                        $image->type => $image->file_path,
                     ];
                 }),
                 'addresses'   => $restaurant->addresses->mapWithKeys(function ($addresses) {
@@ -240,9 +240,9 @@ class RestaurantController extends Controller
         try {
             $restaurant = Restaurant::where('uid', $uid)->firstOrFail();
 
-            $imageUrl = $this->cloudinary->uploadImage(
+            $imageUrl = $this->cloudinary->upload(
                 $request->file('file'),
-                'restaurants/images'
+                'restaurants-products'
             );
 
             if (!$imageUrl) {
@@ -255,7 +255,7 @@ class RestaurantController extends Controller
                     'type'           => $request->for,
                 ],
                 [
-                    'file_path' => $imageUrl, // Cloudinary URL
+                    'file_path' => $imageUrl['url'], // Cloudinary URL
                 ]
             );
 
@@ -264,6 +264,7 @@ class RestaurantController extends Controller
                 'Image uploaded successfully',
                 ['image' => $image]
             );
+
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $this->errorResponse(404, 'Restaurant not found');
         } catch (\Throwable $e) {
@@ -436,7 +437,7 @@ class RestaurantController extends Controller
             return [
                 'uid'   => $data->uid,
                 'type'  => $data->type,
-                'image' => asset('storage/' . $data->file_path),
+                'image' =>  $data->file_path,
             ];
         });
 

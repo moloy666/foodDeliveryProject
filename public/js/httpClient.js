@@ -102,4 +102,3 @@ export function showConfirmAlert(type, text, confirmText = 'Yes', cancelText = '
     });
 }
 
-
