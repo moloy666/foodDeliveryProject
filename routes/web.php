@@ -36,6 +36,7 @@ Route::get('cart', [Controller::class, 'cartItemsPage'])->name('cartPage');
 // Protected routes here
 Route::middleware(['web', 'authGuard'])->group(function () {
     Route::get('profile', [Controller::class, 'profilePage'])->name('profilePage');
+    Route::get('addresses', [Controller::class, 'addressPage'])->name('addressPage');
     Route::get('orders', [Controller::class, 'orderPage'])->name('orderPage');
 
 

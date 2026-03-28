@@ -28,9 +28,9 @@
             </a>
 
             <!-- Addresses -->
-            <a href="{{ route('profilePage') }}"
+            <a href="{{ route('addressPage') }}"
                 class="flex items-center gap-3 px-4 py-3 rounded-lg transition
-            {{ request()->routeIs('loginPage*') ? 'bg-gray-800 text-white shadow' : 'text-gray-700 hover:bg-gray-100' }}">
+                {{ request()->routeIs('addressPage') ? 'bg-gray-800 text-white shadow' : 'text-gray-700 hover:bg-gray-100' }}">
 
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -109,8 +109,8 @@
         </a>
 
         <!-- Addresses -->
-        <a href="{{ route('profilePage') }}"
-            class="flex flex-col items-center py-2 w-full {{ request()->routeIs('loginPage*') ? 'text-gray-900 font-semibold' : 'text-gray-500' }}">
+        <a href="{{ route('addressPage') }}"
+            class="flex flex-col items-center py-2 w-full {{ request()->routeIs('addressPage') ? 'text-gray-900 font-semibold' : 'text-gray-500' }}">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mb-1" fill="none" stroke="currentColor"
                 stroke-width="1.8" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round"

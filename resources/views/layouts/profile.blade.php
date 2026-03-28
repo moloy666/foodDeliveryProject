@@ -8,7 +8,6 @@
 
     @include('layouts.headerLink')
 
-
 </head>
 
 <body>

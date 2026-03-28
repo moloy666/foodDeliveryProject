@@ -70,6 +70,8 @@ Route::prefix('restaurants')->group(function () {
         Route::post('{uid}/documents', [RestaurantController::class, 'addRestaurantDocuments']);
         Route::post('{uid}/images', [RestaurantController::class, 'addRestaurantImages']);
         Route::post('{uid}/addresses', [AddressController::class, 'addRestaurantAddress']);
+        Route::get('{uid}/orders', [OrderController::class, 'getRestaurantOrders']);
+        Route::patch('{uid}/toggle', [RestaurantController::class, 'toggleStatus']);
     });
 });
 

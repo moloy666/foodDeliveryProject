@@ -147,6 +147,7 @@
             </div>`;
         }
 
+        let restaurantId = null;
         async function fetchCart() {
 
             const res = await httpRequest(`/api/cart-items`);
@@ -173,9 +174,8 @@
             cartItemsContainer.classList.remove("hidden");
 
             if (restaurant) {
+                restaurantId = restaurant.uid;
                 restaurantName.innerText = restaurant.name;
-
-
                 restaurantInfo.classList.remove("hidden");
             }
 
@@ -250,7 +250,8 @@
             const res = await httpRequest(`/api/orders/create`, {
                 method: "POST",
                 body: {
-                    address_id: selectedAddressId
+                    address_id: selectedAddressId,
+                    restaurant_id: restaurantId
                 }
             });
 
@@ -287,7 +288,11 @@
                     }
                 });
 
-                location.href = @json(route('orderPage'))
+                if(res?.success){
+                    location.href = @json(route('orderPage'))
+
+                }
+
 
             } catch (error) {
                 console.log(error);

@@ -64,65 +64,72 @@ class RazorpayPaymentController extends Controller
     {
         $validated = $request->validate([
             'address_id' => 'required',
+            'restaurant_id' => 'required',
         ]);
 
         $address_id = $validated['address_id'];
+        $restaurant_id = $validated['restaurant_id'];
 
         $user = $request->user();
         $user_uid = $user->uid;
 
-        $items = Cart::with('food')
-            ->where('user_uid', $user_uid)
-            ->get();
+        try {
+            $items = Cart::with('food')
+                ->where('user_uid', $user_uid)
+                ->get();
 
-        if ($items->isEmpty()) {
-            return $this->errorResponse(400, 'Cart is empty');
+            if ($items->isEmpty()) {
+                return $this->errorResponse(400, 'Cart is empty');
+            }
+
+            $totalAmount = 0;
+            foreach ($items as $item) {
+                $totalAmount += $item->food->discount_price ?? $item->food->price;
+            }
+
+            // Razorpay amount in paise
+            $amountInPaise = $totalAmount * 100;
+
+            $orderData = [
+                'receipt'         => 'rcpt_' . uniqid(),
+                'amount'          => $amountInPaise,
+                'currency'        => 'INR',
+                'payment_capture' => 1
+            ];
+
+            $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
+            $razorpayOrder = $api->order->create($orderData);
+
+            $successAction = [
+                'create_order' => [
+                    'user_uid' => $user_uid,
+                    'restaurant_uid' => $restaurant_id,
+                    'amount'   => $totalAmount,
+                    'address_id' => $address_id
+                ],
+                'clear_cart'   => [
+                    'user_uid' => $user_uid
+                ]
+            ];
+
+            PaymentGateway::create([
+                'order_id'       => $razorpayOrder['id'],
+                'request'        => json_encode($orderData),
+                'success_action' => json_encode($successAction),
+                'status'         => 'created',
+            ]);
+
+            return $this->successResponse(200, 'Payment initialized successfully', [
+                'payload' => [
+                    'key'      => env('RAZORPAY_KEY'),
+                    'order_id' => $razorpayOrder['id'],
+                    'amount'   => $amountInPaise,
+                    'currency' => 'INR',
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return $this->errorResponse(500, 'Payment verification failed', [$e->getMessage()]);
         }
-
-        $totalAmount = 0;
-        foreach ($items as $item) {
-            $totalAmount += $item->food->discount_price ?? $item->food->price;
-        }
-
-        // Razorpay amount in paise
-        $amountInPaise = $totalAmount * 100;
-
-        $orderData = [
-            'receipt'         => 'rcpt_' . uniqid(),
-            'amount'          => $amountInPaise,
-            'currency'        => 'INR',
-            'payment_capture' => 1
-        ];
-
-        $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
-        $razorpayOrder = $api->order->create($orderData);
-
-        $successAction = [
-            'create_order' => [
-                'user_uid' => $user_uid,
-                'amount'   => $totalAmount,
-                'address_id' => $address_id
-            ],
-            'clear_cart'   => [
-                'user_uid' => $user_uid
-            ]
-        ];
-
-        PaymentGateway::create([
-            'order_id'       => $razorpayOrder['id'],
-            'request'        => json_encode($orderData),
-            'success_action' => json_encode($successAction),
-            'status'         => 'created',
-        ]);
-
-        return $this->successResponse(200, 'Payment initialized successfully', [
-            'payload' => [
-                'key'      => env('RAZORPAY_KEY'),
-                'order_id' => $razorpayOrder['id'],
-                'amount'   => $amountInPaise,
-                'currency' => 'INR',
-            ]
-        ]);
     }
 
     public function verifyPayment(Request $request)
@@ -147,7 +154,6 @@ class RazorpayPaymentController extends Controller
         $signature = $validated['signature'];
 
         $payment = PaymentGateway::where('order_id', $orderId)->first();
-
         if (!$payment) {
             return $this->errorResponse(404, 'Payment record not found');
         }
@@ -155,13 +161,45 @@ class RazorpayPaymentController extends Controller
         try {
             $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
 
-                // $api->utility->verifyPaymentSignature([
-                //     'razorpay_order_id'   => $orderId,
-                //     'razorpay_payment_id' => $paymentId,
-                //     'razorpay_signature'  => $signature,
-                // ])
-            ;
+            // $api->utility->verifyPaymentSignature([
+            //     'razorpay_order_id'   => $orderId,
+            //     'razorpay_payment_id' => $paymentId,
+            //     'razorpay_signature'  => $signature,
+            // ])
+
+            $payment->update([
+                'payment_id' => $paymentId,
+                'status'     => 'success',
+                'response'   => json_encode($request->all()),
+            ]);
+
+            // success action
+            $successAction = json_decode($payment->success_action, true);
+
+            if (!is_array($successAction)) {
+                return $this->errorResponse(500, 'Invalid success action format');
+            }
+
+            foreach ($successAction as $action => $data) {
+
+                switch ($action) {
+
+                    case 'create_order':
+                        $this->createOrderAfterPayment($data);
+                        break;
+
+                    // case 'clear_cart':
+                    //     $this->clearUserCart($data);
+                    //     break;
+
+                    default:
+                        break;
+                }
+            }
+
+            return $this->successResponse(200, 'Payment verified successfully', ['successAction' => $successAction]);
         } catch (\Exception $e) {
+
             $payment->update([
                 'payment_id' => $paymentId,
                 'status'     => 'failed',
@@ -169,50 +207,16 @@ class RazorpayPaymentController extends Controller
                     'error' => $e->getMessage()
                 ]),
             ]);
-
-            return $this->errorResponse(400, 'Payment verification failed');
+            return $this->errorResponse(400, 'Payment verification failed', [$e->getMessage()]);
         }
-
-        $payment->update([
-            'payment_id' => $paymentId,
-            'status'     => 'success',
-            'response'   => json_encode($request->all()),
-        ]);
-
-        // success action
-
-        $successAction = json_decode($payment->success_action, true);
-
-        if (!is_array($successAction)) {
-            return $this->errorResponse(500, 'Invalid success action format');
-        }
-
-        foreach ($successAction as $action => $data) {
-
-            switch ($action) {
-
-                case 'create_order':
-                    $this->createOrderAfterPayment($data);
-                    break;
-
-                case 'clear_cart':
-                    $this->clearUserCart($data);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        return $this->successResponse(200, 'Payment verified successfully', ['successAction' => $successAction]);
     }
-
 
 
     protected function createOrderAfterPayment($data)
     {
-        $user_uid   = $data['user_uid'];
-        $address_id = $data['address_id'];
+        $user_uid       = $data['user_uid'];
+        $address_id     = $data['address_id'];
+        $restaurant_uid = $data['restaurant_uid'];
 
         $items = Cart::with('food')
             ->where('user_uid', $user_uid)
@@ -249,6 +253,7 @@ class RazorpayPaymentController extends Controller
             Order::create([
                 'uid'         => $order_uid,
                 'user_uid'    => $user_uid,
+                'restaurant_uid'    => $restaurant_uid,
                 'address_uid' => $address_id,
                 'amount'      => $totalAmount,
             ]);
@@ -262,7 +267,7 @@ class RazorpayPaymentController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            return $this->errorResponse(500, $e->getMessage());
+            return $this->errorResponse(500, "Server error", $e->getMessage());
         }
     }
 

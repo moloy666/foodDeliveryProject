@@ -59,6 +59,11 @@ class Controller extends BaseController
         return view('profile');
     }
 
+    public function addressPage()
+    {
+        return view('address');
+    }
+
     public function orderPage()
     {
         return view('order');

@@ -30,6 +30,36 @@
         const modal = document.getElementById('orderModal');
         const modalContent = document.getElementById('modalContent');
 
+        function showLoadingSkeleton(count = 2) {
+            let skeleton = '';
+            for (let i = 0; i < count; i++) {
+                skeleton += `
+                    <div class="bg-white shadow rounded-xl p-6 border animate-pulse">
+
+                        <div class="flex justify-between mb-4">
+                            <div class="h-5 w-32 bg-gray-200 rounded"></div>
+                            <div class="h-4 w-16 bg-gray-200 rounded"></div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <div class="h-4 bg-gray-200 rounded w-full"></div>
+                            <div class="h-4 bg-gray-200 rounded w-5/6"></div>
+                            <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                        </div>
+
+                        <div class="flex gap-4 mt-6">
+                            <div class="h-4 w-12 bg-gray-200 rounded"></div>
+                            <div class="h-4 w-14 bg-gray-200 rounded"></div>
+                            <div class="h-4 w-24 bg-gray-200 rounded"></div>
+                        </div>
+
+                    </div>
+                    `;
+            }
+            ordersContainer.innerHTML = skeleton;
+        }
+        showLoadingSkeleton()
+
         async function fetchOrders() {
             try {
                 const res = await httpRequest(`/api/orders`);
@@ -54,6 +84,7 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="font-semibold">#${order.uid}</p>
+                                <p class="font-semibold">${order.restaurant.name} (${order.restaurant.phone})</p>
                                 <p class="text-sm text-gray-500">
                                     ${new Date(order.created_at).toLocaleString()}
                                 </p>

@@ -31,6 +31,7 @@ class RestaurantController extends Controller
         // Get approved restaurants with related user and images
         $data = Restaurant::with(['user', 'images', 'addresses'])
             ->where('status', 'approved')
+            ->where('is_open', 1)
             ->get();
 
         $filteredData = $data->map(function ($restaurant) {
@@ -264,7 +265,6 @@ class RestaurantController extends Controller
                 'Image uploaded successfully',
                 ['image' => $image]
             );
-
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $this->errorResponse(404, 'Restaurant not found');
         } catch (\Throwable $e) {
@@ -437,7 +437,7 @@ class RestaurantController extends Controller
             return [
                 'uid'   => $data->uid,
                 'type'  => $data->type,
-                'image' =>  $data->file_path,
+                'image' => $data->file_path,
             ];
         });
 
@@ -445,6 +445,30 @@ class RestaurantController extends Controller
             200,
             'Restaurant images',
             ['images' => $filteredData]
+        );
+    }
+
+
+    public function toggleStatus(Request $request, $restaurantId)
+    {
+        $restaurant = Restaurant::where('uid', $restaurantId)->first();
+
+        if (!$restaurant) {
+            return $this->errorResponse(
+                404,
+                'Restaurant not found',
+                ['restaurant_not_found']
+            );
+        }
+
+        $restaurant->is_open = !$restaurant->is_open;
+        $restaurant->save();
+        return $this->successResponse(
+            200,
+            'Restaurant status changed successfully',
+            [
+                'is_open' => $restaurant->is_open
+            ]
         );
     }
 }
