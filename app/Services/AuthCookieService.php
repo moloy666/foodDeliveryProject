@@ -92,12 +92,10 @@ class AuthCookieService
        CLEAR ALL AUTH COOKIES
     ===================================================== */
 
-    public function forgetAll(): array
+    public function forgetAll(): void
     {
-        return [
-            Cookie::forget('access_token'),
-            Cookie::forget('refresh_token'),
-            Cookie::forget('guest_uid'),
-        ];
+        Cookie::queue(Cookie::forget('access_token'));
+        Cookie::queue(Cookie::forget('refresh_token'));
+        Cookie::queue(Cookie::forget('guest_uid'));
     }
 }

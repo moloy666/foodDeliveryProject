@@ -38,6 +38,7 @@ Route::middleware(['web', 'authGuard'])->group(function () {
     Route::get('profile', [Controller::class, 'profilePage'])->name('profilePage');
     Route::get('addresses', [Controller::class, 'addressPage'])->name('addressPage');
     Route::get('orders', [Controller::class, 'orderPage'])->name('orderPage');
+    // Route::get('restaurants/{uid}/chat', [Controller::class, 'restaurantChatPage'])->name('restaurantChatPage');
 
 
     Route::get('chat', [Controller::class, 'listChatUser'])->name('userChatList');
@@ -55,6 +56,8 @@ Route::middleware(['web', 'authGuard'])->group(function () {
         Route::get('{uid}/foods', [Controller::class, 'sellerRestaurantFoodPage'])->name('sellerRestaurantFoodPage');
         Route::get('{uid}/add-food', [Controller::class, 'sellerRestaurantAddFoodPage'])->name('sellerRestaurantAddFoodPage');
         Route::get('{restaurantId}/foods/{foodId}/images', [Controller::class, 'sellerFoodAddImagePage'])->name('sellerFoodAddImagePage');
+
+        Route::get('{uid}/customer-chats', [Controller::class, 'sellerCustomerChatsPage'])->name('sellerCustomerChatsPage');
     });
 });
 

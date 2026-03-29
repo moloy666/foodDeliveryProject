@@ -20,7 +20,6 @@ export async function httpRequest(url, options = {}) {
                 if (refreshed) {
                     return await fetch(url, config);
                 } else {
-                    showToast("error", "Session expired, please log in again.");
                     throw new Error("Session expired");
                 }
             }

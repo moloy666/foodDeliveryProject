@@ -117,7 +117,13 @@
                     {{ request()->routeIs('sellerRestaurantPage') ? 'bg-gray-800 text-white' : 'text-gray-700' }}">
                 Dashboard
             </a>
-           
+
+            <a href="{{ route('sellerCustomerChatsPage', ['uid' => $restaurantId]) }}" onclick="closeSidebar()"
+                class="block py-2 px-3 rounded hover:bg-gray-500 hover:text-white text-sm
+                    {{ request()->routeIs('sellerCustomerChatsPage') ? 'bg-gray-800 text-white' : 'text-gray-700' }}">
+                Chats
+            </a>
+
             <a href="{{ route('sellerRestaurantMenuPage', ['uid' => $restaurantId]) }}" onclick="closeSidebar()"
                 class="block py-2 px-3 rounded hover:bg-gray-500 hover:text-white text-sm
                     {{ request()->routeIs('sellerRestaurantMenuPage') ? 'bg-gray-800 text-white' : 'text-gray-700' }}">

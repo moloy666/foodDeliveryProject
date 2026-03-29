@@ -185,13 +185,22 @@ class AuthController extends Controller
 
             auth('api')->logout();
 
+            $cookieService->forgetAll();
             return $this->successResponse(
                 200,
                 'Successfully logged out'
-            )->cookie($cookieService->forgetAll());
+            );
 
+            // return $this->successResponse(
+            //     200,
+            //     'Successfully logged out'
+            // )->cookie($cookieService->forgetAll());
+            
         } catch (\Exception $e) {
-            // Token already invalid or expired — safe to ignore
+            return $this->errrResponse(
+                400,
+                $e->getMessage()
+            );
         }
     }
 

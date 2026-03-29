@@ -54,6 +54,34 @@ class Controller extends BaseController
         return view('verify', compact('email'));
     }
 
+    public function restaurantFoodsPage($restaurantId)
+    {
+        $restaurant = Restaurant::with('addresses')->where('uid', $restaurantId)->firstOrFail();
+        return view('restaurantFood', [
+            'restaurantId' => $restaurantId,
+            'restaurant'   => $restaurant,
+        ]);
+    }
+
+    public function restaurantChatPage(Request $request, Restaurant $restaurant)
+    {
+        $user = $request->user();
+
+        return view('chat', [
+            'restaurantId'     => $restaurant->uid,
+            'restaurant'       => $restaurant,
+            'user'             => $user,
+            'userId'           => $user->uid,
+            'restaurantUserId' => $restaurant->user_uid
+        ]);
+    }
+
+    public function cartItemsPage()
+    {
+        return view('cart');
+    }
+
+
     public function profilePage()
     {
         return view('profile');
@@ -71,7 +99,7 @@ class Controller extends BaseController
 
     public function listChatUser()
     {
-        return view('chatList');
+        return view('chat');
     }
 
     public function userChat(Request $request, $friendId)
@@ -154,17 +182,13 @@ class Controller extends BaseController
         ]);
     }
 
-    public function restaurantFoodsPage($restaurantId)
+
+    public function sellerCustomerChatsPage($restaurantId)
     {
         $restaurant = Restaurant::with('addresses')->where('uid', $restaurantId)->firstOrFail();
-        return view('restaurantFood', [
+        return view('seller.customerChats', [
             'restaurantId' => $restaurantId,
             'restaurant'   => $restaurant,
         ]);
-    }
-
-    public function cartItemsPage()
-    {
-        return view('cart');
     }
 }

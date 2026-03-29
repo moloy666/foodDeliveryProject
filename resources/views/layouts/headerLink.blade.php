@@ -7,18 +7,3 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hot-toast@2.4.1/dist/hot-toast.css" />
 
-
-
-
-<style>
-    .fixed-btn {
-        position: fixed;
-        right: 20px;
-        z-index: 9999;
-    }
-
-    /* Cart top, menu below */
-    #floatingCart {
-        bottom: 110px !important;
-    }
-</style>
